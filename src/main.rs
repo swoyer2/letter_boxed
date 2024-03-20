@@ -18,6 +18,10 @@ fn main() {
 
     reduce_on_line(sides, &valid_words);
 
+    let words_filtered:HashSet<String> = read_file("./src/words_filtered.txt");
+
+    solve(words_filtered);
+
 }
 
 fn read_string() -> String {
@@ -131,6 +135,27 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
-fn valid_solution(){
-    let mut char_set: Vec<char> = Vec::new();
+fn solve(words_filtered: HashSet<String>) {
+    let mut sol: HashSet<String> = HashSet::new();
+    let mut to_be_added: String = String::new();
+    let mut max_count = 0;
+    for word in words_filtered.iter() {
+        let mut count = 0;
+
+        for c in word.chars() {
+            
+            if !sol.contains(&c.to_string()) {
+                count += 1;
+            }
+        }
+
+        if count > max_count {
+            to_be_added = word.to_string();
+            max_count = count;
+
+        }
+    }
+    sol.insert(to_be_added);
+    println!("{:?}", sol);
+    println!("{:?}", max_count);
 }
