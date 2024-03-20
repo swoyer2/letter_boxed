@@ -26,11 +26,11 @@ fn main() {
     reduce_on_line(sides, &valid_words);
     let words_filtered:HashSet<String> = read_file("./src/words_filtered.txt");
 
-    // Initiliaze global solution empty HashSet
-    let mut sol: HashSet<String> = HashSet::new();
+    // Initiliaze global solution empty vec
+    let mut sol: String = String::new();
 
     // Solves for best solution with a greedy algorithm
-    solve(words_filtered, sol);
+    solve(&words_filtered, &mut sol, &given_letters);
 
 }
 
@@ -167,68 +167,81 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
-// Creates a file that contains the valid words but only words that start with
-// the given letter
-fn reduce_first_letter(letter: char, valid_words: &HashSet<String>) {
-    // Initialize HashSet for the filtered words that is a clone of previous valid words.
-    let mut filtered_words: HashSet<String> = valid_words.clone();
+// Function to reduce words to those starting with a given letter
+fn reduce_first_letter(letter: char, valid_words: &HashSet<String>) -> HashSet<String> {
+    // Initialize HashSet for the filtered words
+    let mut filtered_words = HashSet::new();
 
-    // Check each word in the valid_words to see if it follows the first letter rule
+    // Check each word in the valid_words to see if it starts with the given letter
     for word in valid_words.iter() {
-        let chars: Vec<char> = word.chars().collect();
-
-        // Check if the characters are next to each other in the side
-        if chars[0] != letter {
-            // remove word from the filtered words
-            filtered_words.remove(word);
-            break;
+        if let Some(first_char) = word.chars().next() {
+            if first_char == letter {
+                // Add word to filtered words if it starts with the given letter
+                filtered_words.insert(word.clone());
             }
         }
+    }
 
-    // Create a file with the filtered words
-    let _ = write_set_to_file(&filtered_words, "src/words_filtered_first_letter.txt");
+    // Return filtered words
+    filtered_words
 }
 
+// Dummy function to get unique characters from a word
+fn get_unique_chars(word: &str) -> HashSet<char> {
+    word.chars().collect()
+}
 
-// Get the unique chars in a string and return them as a HashSet
-fn get_unique_chars(word: &String) -> HashSet<char> {
-    let mut unique_chars: HashSet<char> = HashSet::new();
-    for c in word.chars(){
-        if !unique_chars.contains(&c){
-            unique_chars.insert(c);
+// Function to check if all letters from given_letters are present in the solution
+fn all_letters_used(sol: &str, given_letters: &str) -> bool {
+    let solution_str: String = sol.chars().collect();
+
+    for c in given_letters.chars() {
+        if !solution_str.contains(c) {
+            return false;
         }
     }
-    unique_chars
+    true
 }
 
-// Recursive function that uses a greedy alg in order to solve the problem
-fn solve(words_filtered: HashSet<String>, mut sol: HashSet<String>) {
-    // Word that will be added, changes each time we find a better word
+// Recursive function that uses a greedy algorithm to solve the problem
+fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> String {
     let mut to_be_added: String = String::new();
-
-    // The max number of new letters we have found in a word
     let mut max_count = 0;
 
-    // Check each word to see if it contains more new letters then the previous word
+    // Words filtered after first letter check
+    let words_filtered = if let Some(last_char) = sol.chars().last() {
+        reduce_first_letter(last_char, words_filtered)
+    } else {
+        words_filtered.clone()
+    };
+
+    // Check if all letters are used in the solution
+    println!("{:?}", all_letters_used(sol, given_letters));
+    if all_letters_used(sol, given_letters) {
+        return sol.to_string();
+    }
+
+    // Find the next best word to add to the solution
     for word in words_filtered.iter() {
         let mut count = 0;
+        let unique_chars = get_unique_chars(word);
 
-        for c in get_unique_chars(word) {
-
-            if !sol.contains(&c.to_string()) {
+        for c in unique_chars.iter() {
+            if !sol.contains(*c) {
                 count += 1;
             }
         }
 
         if count > max_count {
-            to_be_added = word.to_string();
+            to_be_added = word.clone();
             max_count = count;
-
         }
     }
 
-    sol.insert(to_be_added);
-
-    println!("{:?}", sol);
-    println!("{:?}", max_count);
+    // Print and update the solution
+    println!("Solution: {:?}", to_be_added);
+    let mut new_sol = sol.to_string();
+    new_sol.push_str(&to_be_added);
+    new_sol.push_str(&solve(&words_filtered, &new_sol, given_letters));
+    new_sol
 }
