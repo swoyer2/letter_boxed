@@ -202,7 +202,7 @@ fn all_letters_used(sol: &str, given_letters: &str) -> bool {
 fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> String {
     let mut to_be_added: String = String::new();
     let mut max_count = 0;
-    // reset
+    // keep copy of original words filtered
     let orig_words_filtered = &words_filtered.clone();
 
     // Words filtered after first letter check
