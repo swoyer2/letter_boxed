@@ -30,7 +30,7 @@ fn main() {
     let mut sol: HashSet<String> = HashSet::new();
 
     // Solves for best solution with a greedy algorithm
-    solve(words_filtered);
+    solve(words_filtered, sol);
 
 }
 
@@ -156,7 +156,7 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
-fn solve(words_filtered: HashSet<String>) {
+fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
     let mut to_be_added: String = String::new();
     let mut max_count = 0;
     for word in words_filtered.iter() {
@@ -175,6 +175,7 @@ fn solve(words_filtered: HashSet<String>) {
 
         }
     }
+    let mut sol: HashSet<String> = HashSet::new();
     sol.insert(to_be_added);
     println!("{:?}", sol);
     println!("{:?}", max_count);
