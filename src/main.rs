@@ -20,6 +20,7 @@ fn main() {
 
     let words_filtered:HashSet<String> = read_file("./src/words_filtered.txt");
 
+    let mut sol: HashSet<String> = HashSet::new();
     solve(words_filtered);
 
 }
@@ -136,14 +137,13 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
 }
 
 fn solve(words_filtered: HashSet<String>) {
-    let mut sol: HashSet<String> = HashSet::new();
     let mut to_be_added: String = String::new();
     let mut max_count = 0;
     for word in words_filtered.iter() {
         let mut count = 0;
 
         for c in word.chars() {
-            
+
             if !sol.contains(&c.to_string()) {
                 count += 1;
             }
