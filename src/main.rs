@@ -186,11 +186,6 @@ fn reduce_first_letter(letter: char, valid_words: &HashSet<String>) -> HashSet<S
     filtered_words
 }
 
-// Dummy function to get unique characters from a word
-fn get_unique_chars(word: &str) -> HashSet<char> {
-    word.chars().collect()
-}
-
 // Function to check if all letters from given_letters are present in the solution
 fn all_letters_used(sol: &str, given_letters: &str) -> bool {
     let solution_str: String = sol.chars().collect();
@@ -207,6 +202,8 @@ fn all_letters_used(sol: &str, given_letters: &str) -> bool {
 fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> String {
     let mut to_be_added: String = String::new();
     let mut max_count = 0;
+    // reset
+    let orig_words_filtered = &words_filtered.clone();
 
     // Words filtered after first letter check
     let words_filtered = if let Some(last_char) = sol.chars().last() {
@@ -216,7 +213,6 @@ fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> St
     };
 
     // Check if all letters are used in the solution
-    println!("{:?}", all_letters_used(sol, given_letters));
     if all_letters_used(sol, given_letters) {
         return sol.to_string();
     }
@@ -224,7 +220,7 @@ fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> St
     // Find the next best word to add to the solution
     for word in words_filtered.iter() {
         let mut count = 0;
-        let unique_chars = get_unique_chars(word);
+        let unique_chars: HashSet<char> = word.chars().collect();
 
         for c in unique_chars.iter() {
             if !sol.contains(*c) {
@@ -242,6 +238,6 @@ fn solve(words_filtered: &HashSet<String>, sol: &str, given_letters: &str) -> St
     println!("Solution: {:?}", to_be_added);
     let mut new_sol = sol.to_string();
     new_sol.push_str(&to_be_added);
-    new_sol.push_str(&solve(&words_filtered, &new_sol, given_letters));
+    new_sol.push_str(&solve(&orig_words_filtered, &new_sol, given_letters));
     new_sol
 }
