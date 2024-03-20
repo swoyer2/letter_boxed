@@ -179,7 +179,7 @@ fn get_unique_chars(word: &String) -> HashSet<char> {
 }
 
 // Recursive function that uses a greedy alg in order to solve the problem
-fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
+fn solve(words_filtered: HashSet<String>, mut sol: HashSet<String>) {
     // Word that will be added, changes each time we find a better word
     let mut to_be_added: String = String::new();
 
@@ -204,8 +204,6 @@ fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
         }
     }
 
-    // Insert the best word into sol
-    let mut sol: HashSet<String> = HashSet::new();
     sol.insert(to_be_added);
 
     println!("{:?}", sol);
