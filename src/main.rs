@@ -169,8 +169,13 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
 
 // Recursive function that uses a greedy alg in order to solve the problem
 fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
+    // Word that will be added, changes each time we find a better word
     let mut to_be_added: String = String::new();
+
+    // The max number of new letters we have found in a word
     let mut max_count = 0;
+
+    // Check each word to see if it contains more new letters then the previous word
     for word in words_filtered.iter() {
         let mut count = 0;
 
@@ -187,8 +192,11 @@ fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
 
         }
     }
+
+    // Insert the best word into sol
     let mut sol: HashSet<String> = HashSet::new();
     sol.insert(to_be_added);
+    
     println!("{:?}", sol);
     println!("{:?}", max_count);
 }
