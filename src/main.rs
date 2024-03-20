@@ -35,7 +35,8 @@ fn main() {
 }
 
 fn read_string() -> String {
-    let mut input = String::new(); // Create a new String to hold the input
+    // Create a new String to hold the input
+    let mut input = String::new();
 
     match io::stdin().read_line(&mut input) {
         Ok(_) => {
@@ -44,7 +45,8 @@ fn read_string() -> String {
         }
         Err(error) => {
             println!("Error reading input: {}", error);
-            String::new() // Return an empty String if an error occurs
+            // Return an empty String if an error occurs
+            String::new()
         }
     }
 }
@@ -106,20 +108,29 @@ fn write_set_to_file(set: &HashSet<String>, filename: &str) -> io::Result<()> {
 }
 
 fn reduce_available_letters(sides: [[char; 3]; 4], valid_words: &HashSet<String>){
+    // Create a HashSet of all the letters that we can't use
     let mut not_available_letters: HashSet<char> = (b'a'..=b'z').map(|c| c as char).collect();
+
+    // Initialize empty HashSet for filtered words
     let mut filtered_words: HashSet<String> = HashSet::new();
+
+    // Remove letters we can use from the not_available_letters HashMap
     for side in &sides {
         for &letter in side.iter() {
             not_available_letters.remove(&letter);
         }
     }
 
+    // Check each word in the valid_words to see if they only contain allowed letters
+    // If so add that word to the filtered words HashSet
     for word in valid_words {
         let contains_unavailable = word.chars().any(|c| not_available_letters.contains(&c));
         if !contains_unavailable {
             filtered_words.insert(word.to_string());
         }
     }
+
+    // Create a file with the filtered words
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
