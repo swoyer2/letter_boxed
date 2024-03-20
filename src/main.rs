@@ -167,6 +167,29 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
+// Creates a file that contains the valid words but only words that start with
+// the given letter
+fn reduce_first_letter(letter: char, valid_words: &HashSet<String>) {
+    // Initialize HashSet for the filtered words that is a clone of previous valid words.
+    let mut filtered_words: HashSet<String> = valid_words.clone();
+
+    // Check each word in the valid_words to see if it follows the first letter rule
+    for word in valid_words.iter() {
+        let chars: Vec<char> = word.chars().collect();
+
+        // Check if the characters are next to each other in the side
+        if chars[0] != letter {
+            // remove word from the filtered words
+            filtered_words.remove(word);
+            break;
+            }
+        }
+
+    // Create a file with the filtered words
+    let _ = write_set_to_file(&filtered_words, "src/words_filtered_first_letter.txt");
+}
+
+
 // Get the unique chars in a string and return them as a HashSet
 fn get_unique_chars(word: &String) -> HashSet<char> {
     let mut unique_chars: HashSet<char> = HashSet::new();
