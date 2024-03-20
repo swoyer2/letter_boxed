@@ -5,22 +5,31 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 
 fn main() {
+    // Get valid words
     let valid_words:HashSet<String> = read_file("./src/words.txt");
+
+    // Get given letters from game
     println!("Please enter given letters:");
     let given_letters = read_string();
-    let sides = create_side(given_letters.clone());
 
+    // Create the sides based off the given letters
+    let sides = create_side(given_letters.clone());
     print_sides(sides);
 
+    // Reduces the valid words by the letters given then puts the new valid words
+    // into a new file called words_filtered.txt
     reduce_available_letters(sides, &valid_words);
-
     let valid_words:HashSet<String> = read_file("./src/words_filtered.txt");
 
+    // Reduces the valid words by the not allowing same line words then changes
+    // the words_filtered file to account for the new words
     reduce_on_line(sides, &valid_words);
-
     let words_filtered:HashSet<String> = read_file("./src/words_filtered.txt");
 
+    // Initiliaze global solution empty HashSet
     let mut sol: HashSet<String> = HashSet::new();
+
+    // Solves for best solution with a greedy algorithm
     solve(words_filtered);
 
 }
