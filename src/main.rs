@@ -167,6 +167,17 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
+// Get the unique chars in a string and return them as a HashSet
+fn get_unique_chars(word: &String) -> HashSet<char> {
+    let mut unique_chars: HashSet<char> = HashSet::new();
+    for c in word.chars(){
+        if !unique_chars.contains(&c){
+            unique_chars.insert(c);
+        }
+    }
+    unique_chars
+}
+
 // Recursive function that uses a greedy alg in order to solve the problem
 fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
     // Word that will be added, changes each time we find a better word
@@ -179,7 +190,7 @@ fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
     for word in words_filtered.iter() {
         let mut count = 0;
 
-        for c in word.chars() {
+        for c in get_unique_chars(word) {
 
             if !sol.contains(&c.to_string()) {
                 count += 1;
@@ -196,7 +207,7 @@ fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
     // Insert the best word into sol
     let mut sol: HashSet<String> = HashSet::new();
     sol.insert(to_be_added);
-    
+
     println!("{:?}", sol);
     println!("{:?}", max_count);
 }
