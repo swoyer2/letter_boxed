@@ -8,7 +8,7 @@ fn main() {
     // Get valid words
     let valid_words:HashSet<String> = read_file("./src/words.txt");
 
-    // Get given letters from game
+    // Get given letters from game  
     println!("Please enter given letters:");
     let given_letters = read_string();
 
