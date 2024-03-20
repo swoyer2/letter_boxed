@@ -95,6 +95,7 @@ fn print_sides(sides: [[char; 3]; 4]){
     }
 }
 
+// Writes a given HashSet to a file seperating each string by newlines
 fn write_set_to_file(set: &HashSet<String>, filename: &str) -> io::Result<()> {
     let file = File::create(filename)?;
     let mut writer = BufWriter::new(file);
@@ -107,6 +108,8 @@ fn write_set_to_file(set: &HashSet<String>, filename: &str) -> io::Result<()> {
     Ok(())
 }
 
+// Creates a new file that contains the valid words that use the letter given 
+// by the user.
 fn reduce_available_letters(sides: [[char; 3]; 4], valid_words: &HashSet<String>){
     // Create a HashSet of all the letters that we can't use
     let mut not_available_letters: HashSet<char> = (b'a'..=b'z').map(|c| c as char).collect();
@@ -134,9 +137,14 @@ fn reduce_available_letters(sides: [[char; 3]; 4], valid_words: &HashSet<String>
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
+// Creates a file that contains the valid words given but makes sure that
+// we don't use letters on the same line back to back.
 fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
+    // Initialize HashSet for the filtered words that is a clone of previous valid words.
     let mut filtered_words: HashSet<String> = valid_words.clone();
 
+    // Check each side then check each word in the valid_words to see if it follows the
+    // no letters of the same line next to each other rule.
     for side in &sides {
         for word in valid_words.iter() {
             let chars: Vec<char> = word.chars().collect();
@@ -147,15 +155,19 @@ fn reduce_on_line(sides: [[char; 3]; 4], valid_words: &HashSet<String>) {
 
                 // Check if the characters are next to each other in the side
                 if side.contains(&current_char) && side.contains(&next_char) {
+                    // remove word from the filtered words
                     filtered_words.remove(word);
                     break;
                 }
             }
         }
     }
+
+    // Create a file with the filtered words
     let _ = write_set_to_file(&filtered_words, "src/words_filtered.txt");
 }
 
+// Recursive function that uses a greedy alg in order to solve the problem
 fn solve(words_filtered: HashSet<String>, sol: HashSet<String>) {
     let mut to_be_added: String = String::new();
     let mut max_count = 0;
